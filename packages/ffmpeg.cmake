@@ -1,20 +1,18 @@
 ExternalProject_Add(ffmpeg
     DEPENDS
         bzip2
-        dcadec
-        fdk-aac
         game-music-emu
+        gmp
         lame
         libass
         libbluray
         libmodplug
         libpng
+        libsoxr
         libvpx
-        opencore-amr
-        openssl
+        libzimg
         opus
         speex
-        theora
         vorbis
         x264
         xvidcore
@@ -37,23 +35,24 @@ ExternalProject_Add(ffmpeg
     --enable-avresample
     --enable-postproc
     --enable-avisynth
+    --enable-gmp
     --enable-libass
     --enable-libbluray
-    --enable-libdcadec
-    --enable-libfdk-aac
+    --enable-libfreetype
+    --enable-libfribidi
     --enable-libgme
     --enable-libmodplug
     --enable-libmp3lame
-    --enable-libopencore-amrnb
-    --enable-libopencore-amrwb
     --enable-libopus
+    --enable-libsoxr
     --enable-libspeex
-    --enable-libtheora
     --enable-libvorbis
     --enable-libvpx
     --enable-libx264
     --enable-libxvid
-    --enable-openssl
+    --enable-libzimg
+    --enable-schannel
+    "--extra-libs='-lsecurity -lschannel'" # ffmpeg’s build system is retarded
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1

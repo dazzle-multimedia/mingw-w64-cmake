@@ -12,31 +12,35 @@ function(force_rebuild _name)
 endfunction()
 
 function(force_rebuild_git _name)
-    ExternalProject_Add_Step(${_name} force-update
-        DEPENDEES download
-        DEPENDERS update patch
-        COMMAND git reset --hard @{u}
-            COMMAND git pull
-        WORKING_DIRECTORY <SOURCE_DIR>
-        ALWAYS 1
-        LOG 1
-    )
+    if(ENABLE_VCS_UPDATES)
+        ExternalProject_Add_Step(${_name} force-update
+            DEPENDEES download
+            DEPENDERS update patch
+            COMMAND git reset --hard @{u}
+                COMMAND git pull
+            WORKING_DIRECTORY <SOURCE_DIR>
+            ALWAYS 1
+            LOG 1
+        )
 
-    force_rebuild(${_name})
+        force_rebuild(${_name})
+    endif()
 endfunction()
 
 function(force_rebuild_svn _name)
-    ExternalProject_Add_Step(${_name} force-update
-        DEPENDEES download
-        DEPENDERS update patch
-        COMMAND svn revert -R .
-        COMMAND svn up
-        WORKING_DIRECTORY <SOURCE_DIR>
-        ALWAYS 1
-        LOG 1
-    )
+    if(ENABLE_VCS_UPDATES)
+        ExternalProject_Add_Step(${_name} force-update
+            DEPENDEES download
+            DEPENDERS update patch
+            COMMAND svn revert -R .
+            COMMAND svn up
+            WORKING_DIRECTORY <SOURCE_DIR>
+            ALWAYS 1
+            LOG 1
+        )
 
-    force_rebuild(${_name})
+        force_rebuild(${_name})
+    endif()
 endfunction()
 
 function(autogen _name)
@@ -60,8 +64,14 @@ function(autoreconf _name)
 endfunction()
 
 foreach(package
+    libsoxr
+    libzimg
+    angle
+    gmp
+    xz
+    lzo
+    uchardet
     rubberband
-    libwaio
     zlib
     bzip2
     libjpeg
@@ -69,20 +79,13 @@ foreach(package
     lame
     ogg
     vorbis
-    theora
     opus
     speex
     libmodplug
     libvpx
     xvidcore
-    opencore-amr
-    fdk-aac
     game-music-emu
-    libgpg_error
-    libgcrypt
-    openssl
     libpng
-    libxml2
     x264
     libdvdcss
     libdvdread
@@ -92,13 +95,11 @@ foreach(package
     openal-soft
     fribidi
     expat
+    libarchive
     freetype2
     libbluray
-    fontconfig
-    enca
     harfbuzz
     libass
-    dcadec
     ffmpeg
     mpv
 )

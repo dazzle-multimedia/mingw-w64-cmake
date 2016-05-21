@@ -33,13 +33,14 @@ ExternalProject_Add(mingw-w64-headers
     SOURCE_DIR mingw-w64-prefix/src/mingw-w64
     BINARY_DIR mingw-w64-prefix/src/mingw-w64-headers-build
     DEPENDS binutils
-    URL "http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v4.0.2.tar.bz2"
-    URL_HASH SHA256=3e9050a8c6689ef8a0cfafa40a7653e8c347cf93c105d547239c573afe7b8952
-    PATCH_COMMAND patch -p1 < ${CMAKE_CURRENT_SOURCE_DIR}/mingw-w64-1.patch
+    GIT_REPOSITORY git://git.code.sf.net/p/mingw-w64/mingw-w64
+    UPDATE_COMMAND ""
+    PATCH_COMMAND ${EXEC} git am ${CMAKE_CURRENT_SOURCE_DIR}/mingw-w64-*.patch
     CONFIGURE_COMMAND <SOURCE_DIR>/mingw-w64-headers/configure
         --host=${TARGET_ARCH}
         --prefix=${MINGW_INSTALL_PREFIX}
         --enable-sdk=all
+        --enable-secure-api
     BUILD_COMMAND ""
     INSTALL_COMMAND make install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
@@ -51,8 +52,8 @@ ExternalProject_Add(gcc-base
     SOURCE_DIR gcc-prefix/src/gcc
     BINARY_DIR gcc-prefix/src/gcc-build
     DEPENDS mingw-w64-headers
-    URL "ftp://ftp.gwdg.de/pub/misc/gcc/releases/gcc-5.1.0/gcc-5.1.0.tar.bz2"
-    URL_HASH SHA512=30f6a94d3adb25bc51fcaddf32a6c41429f569eeb9ed64330445b1296f99998fbfa03277b375be4f7b2b80f519910ef88e4149db7cd9031e2c61a49f501bde94
+    URL "ftp://ftp.gwdg.de/pub/misc/gcc/releases/gcc-5.3.0/gcc-5.3.0.tar.bz2"
+    URL_HASH SHA512=d619847383405fd389f5a2d7225f97fedb01f81478dbb8339047ccba7561a5c20045ab500a8744bffd19ea51892ce09fc37f862f2cfcb42de0f0f8cd8f8da37a
     CONFIGURE_COMMAND <SOURCE_DIR>/configure
         --target=${TARGET_ARCH}
         --prefix=${CMAKE_INSTALL_PREFIX}
@@ -79,6 +80,14 @@ ExternalProject_Add(mingw-w64-crt
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
+)
+
+ExternalProject_Add_Step(mingw-w64-headers autoreconf
+    DEPENDEES download update patch
+    DEPENDERS configure
+    COMMAND ${EXEC} autoreconf -fi
+    WORKING_DIRECTORY <SOURCE_DIR>/mingw-w64-crt
+    LOG 1
 )
 
 ExternalProject_Add(gcc

@@ -1,8 +1,7 @@
-ExternalProject_Add(opencore-amr
+ExternalProject_Add(libzimg
     DEPENDS gcc
-    GIT_REPOSITORY "git://git.code.sf.net/p/opencore-amr/code"
+    GIT_REPOSITORY "https://github.com/sekrit-twc/zimg.git"
     UPDATE_COMMAND ""
-    PATCH_COMMAND ${EXEC} git am ${CMAKE_CURRENT_SOURCE_DIR}/opencore-amr-*.patch
     CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/configure
         --host=${TARGET_ARCH}
         --prefix=${MINGW_INSTALL_PREFIX}
@@ -12,5 +11,5 @@ ExternalProject_Add(opencore-amr
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 
-force_rebuild_git(opencore-amr)
-autoreconf(opencore-amr)
+force_rebuild_git(libzimg)
+autogen(libzimg)
